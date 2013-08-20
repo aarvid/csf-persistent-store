@@ -22,14 +22,12 @@
 ;;; node-id of the value that is supposed to be there.  This is for
 ;;; two reasons:  to break circularity and to allow atomic rollback
 ;;; via the object map.
-;;;  !!!!! created defgeneric verify use of this.
-(defgeneric slot-value-using-class (class object slot))
 (defmethod slot-value-using-class ((class persistent-standard-class)
                                    (object persistent-standard-object)
                                    slot)
   (declare #.(performance-optimizations))
-  (let ((slot-descriptor (find slot (c2mop:compute-slots class)
-                               :key #'c2mop:slot-definition-name)))
+  (let ((slot-descriptor (find slot (compute-slots class)
+                               :key #'slot-definition-name)))
     (if (and (typep slot-descriptor 'persistent-slot-definition)
              *dereference-persistent-slots*
              (boundp '*current-transaction*))
@@ -39,6 +37,14 @@
                        :node-id (call-next-method)
                        :node-index +node-index-scalar+))))
 
+(defmethod (setf slot-value-using-class) (new-value (class persistent-standard-class)
+                                                         (object persistent-standard-object)
+                                                         slot)
+  (declare #.(performance-optimizations))
+  (let ((slot-descriptor (find slot (compute-slots class) :key #'slot-definition-name)))
+    (if (typep slot-descriptor 'persistent-slot-definition)
+        (error "Persistent slot ~s in ~s is immutable." slot-descriptor object)
+        (call-next-method))))
 
 (declaim (ftype (function (persistent-store t) non-negative-integer) slot-value->persistent-node)
          (inline slot-value->persistent-node))
@@ -60,7 +66,7 @@
 
 
 
-;;; !!! clos problem. need to substitute (c2mop::slot-unbound-value)
+;;; !!! clos problem. need to substitute (slot-unbound-value)
 (defun compute-persistent-slot-initargs (class persistent-store initargs)
   "Scan over the persistent effective slots in CLASS,
    determine the value to be assigned to each slot, either

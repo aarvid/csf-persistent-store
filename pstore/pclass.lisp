@@ -45,7 +45,7 @@
 ;;; Some slots are persistent and some are transient only.  The
 ;;; persistent slots will inherit from this class of slot definition
 ;;; so we can tell them apart.
-(defclass persistent-slot-definition (c2mop:standard-slot-definition)
+(defclass persistent-slot-definition (standard-slot-definition)
   ((persistent-initarg :initarg :persistent-initarg
                        :reader persistent-slot-definition/persistent-initarg)))
 
@@ -55,7 +55,7 @@
          :persistent-initarg (slot-name->persistent-initarg name)
          initargs))
 
-(defmethod c2mop:slot-definition-initargs ((slot-definition persistent-slot-definition))
+(defmethod slot-definition-initargs ((slot-definition persistent-slot-definition))
   (cons (persistent-slot-definition/persistent-initarg slot-definition)
         (call-next-method)))
 
@@ -64,49 +64,49 @@
 ;;;     added defgeneric to avoid warning.
 (defgeneric slot-definition-standard-initargs (slot-definition-standard-initargs))
 (defmethod slot-definition-standard-initargs ((slot-definition persistent-slot-definition))
-  (cdr (c2mop:slot-definition-initargs slot-definition)))
+  (cdr (slot-definition-initargs slot-definition)))
 
 ;;; In theory, the inheritance list ought to be
-;;; (persistent-slot-definition c2mop:direct-slot-definition) but there
+;;; (persistent-slot-definition direct-slot-definition) but there
 ;;; is apparently an initialization on
-;;; c2mop:standard-direct-slot-definition that we need.
+;;; standard-direct-slot-definition that we need.
 (defclass persistent-direct-slot-definition (persistent-slot-definition
-                                             c2mop:standard-direct-slot-definition)
+                                             standard-direct-slot-definition)
   ())
 
 ;;; $$$ see closer-mop to fix arguments
-(defmethod c2mop:direct-slot-definition-class
+(defmethod direct-slot-definition-class
     ((class persistent-standard-class) &rest initargs)
   (destructuring-bind
       (&key transient-only &allow-other-keys)
-      (c2mop:fix-slot-initargs initargs)
+      (fix-slot-initargs initargs)
     (if transient-only
-        (find-class 'c2mop:standard-direct-slot-definition)
+        (find-class 'standard-direct-slot-definition)
         (find-class 'persistent-direct-slot-definition))))
 
 (defclass persistent-effective-slot-definition (persistent-slot-definition
-                                                c2mop:standard-effective-slot-definition)
+                                                standard-effective-slot-definition)
   ())
 
-(defmethod c2mop:effective-slot-definition-class
+(defmethod effective-slot-definition-class
     ((class persistent-standard-class) &rest initargs)
   (if (typep (car initargs) 'persistent-slot-definition)
       (find-class 'persistent-effective-slot-definition)
-      (find-class 'c2mop:standard-effective-slot-definition)))
+      (find-class 'standard-effective-slot-definition)))
 
 ;;; $$$ class-effective-slots -> compute-slots
 (defun scan-class-persistent-effective-slots (class)
   (declare (optimizable-series-function))
   (choose-if (lambda (slot)
                (typep slot 'persistent-slot-definition))
-             (scan 'list (c2mop:compute-slots class))))
+             (scan 'list (compute-slots class))))
 
 ;;; The :transient-only option is rejected during class slot
 ;;; canonicalization.  This function fixes that by stripping off the
 ;;; :transient-only option before canonicalization and replacing it
 ;;; after.
 #+lispworks
-(defmethod c2mop::canonicalize-defclass-slot ((prototype persistent-standard-class) slot)
+(defmethod :canonicalize-defclass-slot ((prototype persistent-standard-class) slot)
   ;; make sure the slot is a list.
   (unless (consp slot)
     (setq slot (list slot)))
@@ -121,7 +121,7 @@
 ;;; function fixes that by stripping off the :schema-version option
 ;;; before canonicalizing the other options, then replacing it.
 #+lispworks
-(defmethod c2mop::canonicalize-class-options ((prototype persistent-standard-class) options)
+(defmethod :canonicalize-class-options ((prototype persistent-standard-class) options)
   (let ((schema-version-option (find :schema-version options :key #'car)))
     `(,@(call-next-method prototype (delete schema-version-option options))
         ,@(when schema-version-option
@@ -148,7 +148,7 @@
 
 ;;; Only persistent-standard-object and its subclasses are valid
 ;;; superclasses for persistent-objects
-(defmethod c2mop:validate-superclass ((class persistent-standard-class)
+(defmethod validate-superclass ((class persistent-standard-class)
                                       superclass)
   (subtypep superclass 'persistent-standard-object))
 
@@ -190,14 +190,7 @@
 
 
 
-(defmethod (setf c2mop:slot-value-using-class) (new-value (class persistent-standard-class)
-                                                         (object persistent-standard-object)
-                                                         slot)
-  (declare #.(performance-optimizations))
-  (let ((slot-descriptor (find slot (c2mop:compute-slots class) :key #'c2mop:slot-definition-name)))
-    (if (typep slot-descriptor 'persistent-slot-definition)
-        (error "Persistent slot ~s in ~s is immutable." slot-descriptor object)
-        (call-next-method))))
+
 
 (defvar *restoring-instance* nil
   "Bound to an instance being restored.")
@@ -218,9 +211,9 @@
    Third, the persistent-initarg which will be passed to the next
    layer down to stuff in a value."
   (declare #.(performance-optimizations))
-  (let ((initargs (c2mop:slot-definition-initargs slot)))
+  (let ((initargs (slot-definition-initargs slot)))
     (values (cdr initargs)
-            (c2mop:slot-definition-initfunction slot)
+            (slot-definition-initfunction slot)
             (car initargs))))
 
 (declaim (ftype (function (list list t t) t) slot-initial-value)
@@ -269,7 +262,7 @@
     (setf (persistent-standard-object/pstore *restoring-instance*) persistent-store)
     (setf (persistent-standard-object/node-id *restoring-instance*) node-id)
     (setf (persistent-standard-object/node-index *restoring-instance*) node-index)
-    (apply #'c2mop::shared-initialize *restoring-instance* t init-plist)
+    (apply #'shared-initialize *restoring-instance* t init-plist)
     *restoring-instance*))
 
 
@@ -280,19 +273,19 @@
   (:method ((original-instance persistent-standard-object) &rest initargs)
     (debug-message 5 "Remaking ~s with ~s" original-instance initargs)
     (let ((class (class-of original-instance)))
-      (apply #'c2mop::shared-initialize (allocate-instance class) t
+      (apply #'shared-initialize (allocate-instance class) t
              :persistent-store (persistent-standard-object/pstore original-instance)
              :node-id (persistent-standard-object/node-id original-instance)
              (append initargs
                      (multiple-value-bind (slot-persistent-initargs values)
                          (map-fn '(values symbol integer)
                                  (lambda (persistent-slot)
-                                   (values (car (c2mop:slot-definition-initargs persistent-slot))
+                                   (values (car (slot-definition-initargs persistent-slot))
                                            (slot-value original-instance
-                                                       (c2mop:slot-definition-name persistent-slot))))
+                                                       (slot-definition-name persistent-slot))))
                                  (choose-if (lambda (persistent-slot)
-                                              (c2mop:slot-boundp-using-class class original-instance
-                                                                             (c2mop:slot-definition-name persistent-slot)))
+                                              (slot-boundp-using-class class original-instance
+                                                                             (slot-definition-name persistent-slot)))
                                             (scan-class-persistent-effective-slots class)))
                        (collect-plist
                         slot-persistent-initargs

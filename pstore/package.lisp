@@ -12,7 +12,7 @@
   (defpackage #:csf-persistent-store
     (:nicknames :pstore)
     ;; do not :use series, install series after definition of package
-    (:use #:cl #:csf-config #:csf-utility) 
+    (:use #:closer-common-lisp #:csf-config #:csf-utility) 
     #-(or allegro clisp)
     (:import-from #+lispworks #:mp
                   #+(or openmcl digitool) #:ccl
