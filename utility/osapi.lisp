@@ -17,7 +17,7 @@
 
 
 ;;; !!! is this correct?
-;;; changed to use cl-fad was win32 only.
+;;; changed to use cl-fad, code was win32 only.
 (defun scan-directory (pathspec)
   ;; can't use native scanner.
   (declare (optimizable-series-function))

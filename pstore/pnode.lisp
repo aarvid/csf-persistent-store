@@ -170,10 +170,15 @@
                        right-child-offset)
                  (type non-negative-fixnum weight)
                  )
+        (debug-message 5 "n-join 1")
         (%write-fixnum     weight             log-stream)
+        (debug-message 5 "n-join 2")
         (%write-unsigned32 left-child-offset  log-stream)
+        (debug-message 5 "n-join 3h")
         (%write-unsigned32 right-child-offset log-stream)
+        (debug-message 5 "n-join 4")
         (funcall emit-info info              log-stream)
+        (debug-message 5 "n-join 5")
         (%make-persistent-node weight
                                left-child-offset
                                right-child-offset

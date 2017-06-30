@@ -1,13 +1,13 @@
 ;;;; system definition file for persistent-store utilities.
 
-(asdf:defsystem #:csf-utility
+(asdf:defsystem "csf-utility"
   :serial t
   :description "Utility and Config packages for Persistent Store"
   :author "Joe Marshall, modified by Andy Peterson <andy.arvid@gmail.com>"
   :license "BSD 3"
-  :depends-on (#:alexandria #:series #:cl-fad
+  :depends-on ("alexandria" "series" "cl-fad" "trivial-gray-streams"
                             #+(or cmu sbcl (and ccl (not windows)))
-                            #:local-time)
+                            "local-time")
   :components ((:file "packages")
                (:file "declarations")
                (:file "types")

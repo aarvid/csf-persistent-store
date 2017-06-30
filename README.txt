@@ -12,7 +12,8 @@ The code was downloaded from the jrm-code-project here:
 
 This project attempts to extract the code necessary for a persistent-store
 library for open-source common lisp implementations and bring it up-to-date
-with current conventions and libraries (i.e. asdf, closer-mop, ...).  
+with current conventions and libraries (i.e. asdf, closer-mop, cl-fad, 
+local-time, ...).  
 
 The original code is monolithic, written for lispworks and maybe allegro
 on windows, and certainly optimized for lispworks.

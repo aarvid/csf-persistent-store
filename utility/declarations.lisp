@@ -74,6 +74,110 @@
       0)
   "Controls performance when compiling debuggable code.")
 
+;;; !!!
+
+;; parameters to debug everything
+(defparameter *performance-compilation-speed-declaration*
+  (if (boundp '*performance-compilation-speed-declaration*)
+      *performance-compilation-speed-declaration*
+      *debug-compilation-speed-declaration*)
+  "Controls speed of compiler when compiling high-performance code.")
+
+(defparameter *performance-debug-declaration*
+  (if (boundp '*performance-debug-declaration*)
+      *performance-debug-declaration*
+      *debug-debug-declaration*)
+  "Controls generation of debug information when compiling high-performance code.")
+
+(defparameter *performance-fixnum-safety-declaration*
+  (if (boundp '*performance-fixnum-safety-declaration*)
+      *performance-fixnum-safety-declaration*
+      *debug-fixnum-safety-declaration*)
+  "Controls integer range assumptions when compiling high-performance code.")
+
+(defparameter *performance-float-declaration*
+  (if (boundp '*performance-float-declaration*)
+      *performance-float-declaration*
+      *debug-float-declaration*)
+  "Controls floating point assumptions when compiling high-performance code.")
+
+(defparameter *performance-interruptable-declaration*
+  (if (boundp '*performance-interruptable-declaration*)
+      *performance-interruptable-declaration*
+      *debug-interruptable-declaration*)
+  "Controls interrupt polling when compiling high-performance code.")
+
+(defparameter *performance-safety-declaration*
+  (if (boundp '*performance-safety-declaration*)
+      *performance-safety-declaration*
+      *debug-safety-declaration*)
+  "Controls type checking when compiling high-performance code.")
+
+(defparameter *performance-space-declaration*
+  (if (boundp '*performance-space-declaration*)
+      *performance-space-declaration*
+      *debug-space-declaration*)
+  "Controls size of image when compiling high-performance code.")
+
+(defparameter *performance-speed-declaration*
+  (if (boundp '*performance-speed-declaration*)
+      *performance-speed-declaration*
+      *debug-speed-declaration*)
+  "Controls performance when compiling high-performance code.")
+
+(defparameter *standard-compilation-speed-declaration*
+  (if (boundp '*standard-compilation-speed-declaration*)
+      *standard-compilation-speed-declaration*
+      *debug-compilation-speed-declaration*)
+  "Controls speed of compiler when compiling released code.")
+
+(defparameter *standard-debug-declaration*
+  (if (boundp '*standard-debug-declaration*)
+      *standard-debug-declaration*
+      *debug-debug-declaration*)
+  "Controls generation of debug information when compiling released code.")
+
+(defparameter *standard-fixnum-safety-declaration*
+  (if (boundp '*standard-fixnum-safety-declaration*)
+      *standard-fixnum-safety-declaration*
+      *debug-fixnum-safety-declaration*)
+  ;; 3 means check fixnums, 0 means don't check
+  "Controls integer range assumptions when compiling released code.")
+
+(defparameter *standard-float-declaration*
+  (if (boundp '*standard-float-declaration*)
+      *standard-float-declaration*
+      *debug-float-declaration*)
+  "Controls floating point assumptions when compiling released code.")
+
+(defparameter *standard-interruptable-declaration*
+  (if (boundp '*standard-interruptable-declaration*)
+      *standard-interruptable-declaration*
+      *debug-interruptable-declaration*)
+  ;; 3 means poll, 0 means don't poll
+  "Controls interrupt polling when compiling released code.")
+
+(defparameter *standard-safety-declaration*
+  (if (boundp '*standard-safety-declaration*)
+      *standard-safety-declaration*
+      *debug-safety-declaration*)
+  "Controls type checking when compiling released code.")
+
+(defparameter *standard-space-declaration*
+  (if (boundp '*standard-space-declaration*)
+      *standard-space-declaration*
+      *debug-space-declaration*)
+  "Controls size of image when compiling released code.")
+
+(defparameter *standard-speed-declaration*
+  (if (boundp '*standard-speed-declaration*)
+      *standard-speed-declaration*
+      *debug-speed-declaration*)
+  "Controls performance when compiling released code.")
+
+
+;;; !!!
+
 (defparameter *performance-compilation-speed-declaration*
   (if (boundp '*performance-compilation-speed-declaration*)
       *performance-compilation-speed-declaration*
@@ -241,3 +345,6 @@
      #+lispworks (HCL:FIXNUM-SAFETY ,*standard-fixnum-safety-declaration*)
      #+lispworks (FLOAT             ,*standard-float-declaration*)
      #+lispworks (SYS:INTERRUPTABLE ,*standard-interruptable-declaration*))))
+
+
+

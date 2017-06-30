@@ -396,7 +396,9 @@
           ;; The solution?  Pretend to add the object for the purpose
           ;; of determining its size, then actually add the object.
           (let ((counting-stream (make-instance 'byte-counting-stream
-                                                :initial-position (persistent-store/next-location persistent-store))))
+                                                :initial-position
+                                                (persistent-store/next-location
+                                                 persistent-store))))
             (object-map/add counting-stream object-map node-id 0 "dummy string")
             (* +commit-record-alignment+
                (ceiling (file-position counting-stream) +commit-record-alignment+))))

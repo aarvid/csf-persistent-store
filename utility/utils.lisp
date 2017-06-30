@@ -28,7 +28,7 @@
   (let ((current-offset (file-position stream)))
     (cond ((null current-offset) (error "Could not determine offset in file."))
           ((= alignment 1) current-offset)
-          (t (let ((remainder      (mod current-offset alignment)))
+          (t (let ((remainder (mod current-offset alignment)))
                (cond ((zerop remainder) current-offset)
                      ;; A hack.  When padding to align the data
                      ;; structures, terminate the padding with a
@@ -42,10 +42,25 @@
                       (+ current-offset (- alignment remainder)))
                      (t
                       (dotimes (i (- alignment remainder 1)
-                                  (progn (write-byte (char-code #\newline) stream)
-                                         (+ current-offset (- alignment remainder))))
+                                  (progn (write-byte (char-code #\newline)
+                                                     stream)
+                                         (+ current-offset
+                                            (- alignment remainder))))
                         (write-byte 32 stream)))))))))
+(defclass byte-counting-stream
+    (trivial-gray-streams:fundamental-binary-output-stream)
+  ((position :initarg :initial-position
+             :initform 0
+             :accessor trivial-gray-streams:stream-file-position)))
 
+(defmethod trivial-gray-streams:stream-write-byte ((s byte-counting-stream) byte)
+  (incf (trivial-gray-streams:stream-file-position s))
+  byte)
+
+(defmethod trivial-gray-streams:stream-write-sequence
+    ((s byte-counting-stream) sequence start end &key)
+  (incf (trivial-gray-streams:stream-file-position s) (- end start))
+  sequence)
 
 
 

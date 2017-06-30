@@ -9,6 +9,10 @@
    ;; declarations.lisp
    standard-optimizations
    performance-optimizations
+   *disable-debug-messages*
+   *debug-noise-level*
+   *debug-noise-print-level*
+   *debug-noise-print-length*
    ))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
@@ -75,6 +79,7 @@
      read-unsigned32
      objects-equalp
      pushlast
+     byte-counting-stream
      ;; replacement-macros.lisp
      debug-message
      when-debugging

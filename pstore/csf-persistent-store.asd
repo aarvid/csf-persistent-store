@@ -1,12 +1,12 @@
 ;;;; ASDF System Definition file for csf-persistent-store.asd
 
-(asdf:defsystem #:csf-persistent-store
+(asdf:defsystem "csf-persistent-store"
   :serial t
   :description "ChangeSafe's Persistent Store transformed into a library for
 open source lisps. "
   :author "Joe Marshall, Andy Peterson <andy.arvid@gmail.com>"
   :license "BSD 3"
-  :depends-on (#:series #:closer-mop #:csf-utility)
+  :depends-on ("series" "closer-mop" "csf-utility" "babel")
   :components ((:file "package")
                (:file "did")
                (:file "pnode")

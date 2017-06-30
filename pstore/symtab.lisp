@@ -116,10 +116,15 @@
             (:constructor make-symbol-table ())
             (:copier nil))
 
-  (interned-strings (make-interning-table 'string #'equal +initial-symbol-table-strings+))
-  (interned-symbols (make-interning-table 'symbol #'eq    +initial-symbol-table-symbols+))
-  (interned-dids    (make-interning-table 'distributed-identifier #'eq +initial-symbol-table-dids+))
-  )
+  (interned-strings (make-interning-table 'string
+                                          #'equal
+                                          +initial-symbol-table-strings+))
+  (interned-symbols (make-interning-table 'symbol
+                                          #'eq
+                                          +initial-symbol-table-symbols+))
+  (interned-dids    (make-interning-table 'distributed-identifier
+                                          #'eq
+                                          +initial-symbol-table-dids+)))
 
 (declaim (ftype (function (symbol-table)        array-index)
                 symbol-table/string-count)

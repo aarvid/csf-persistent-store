@@ -21,10 +21,11 @@
 
 ;; By default, this will be set to nil.
 
-(defparameter *disable-debug-messages* nil
-  "Set this to T and then recompile the system to get rid of all the debug messages.")
+(defparameter csf-config:*disable-debug-messages* nil
+  "Set this to T and then recompile the system to get rid of all the debug
+   messages.")
 
-(defvar *debug-noise-level*
+(defvar csf-config:*debug-noise-level*
     nil
   "Controls the level of debugging noise output.  Should be NIL or a value
    from 0 through 5.  Each DEBUG-MESSAGE has a value from 0 to 5.  If the
@@ -59,8 +60,10 @@
     `(WHEN (DEBUG-LEVEL-MEETS-OR-EXCEEDS? ,noise)
        (LOCALLY ,@body))))
 
-(defvar *debug-noise-print-level* 5 "Print level when printing debug noise.")
-(defvar *debug-noise-print-length* 10 "Print level when printing debug noise.")
+(defvar csf-config:*debug-noise-print-level* 5
+  "Print level when printing debug noise.")
+(defvar csf-config:*debug-noise-print-length* 10
+  "Print level when printing debug noise.")
 
 (defmacro debug-message (noise format-string &rest args)
   "Print a message on *DEBUG-IO* using FORMAT-STRING and ARGS
